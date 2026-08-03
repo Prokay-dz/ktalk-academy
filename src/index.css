@@ -1,0 +1,347 @@
+/* KTalk Academy Design System & Global Styles */
+:root {
+  --font-primary: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  
+  /* Primary Brand Colors */
+  --navy-900: #020E1C;
+  --navy-800: #041527;
+  --navy-700: #0A213D;
+  --navy-600: #102E52;
+  
+  /* Accent Gold / Yellow */
+  --gold-500: #F5A623;
+  --gold-400: #FFB834;
+  --gold-600: #D98800;
+  --gold-gradient: linear-gradient(135deg, #F7B500 0%, #E59800 100%);
+  --gold-gradient-hover: linear-gradient(135deg, #FFC21A 0%, #F5A623 100%);
+  
+  /* Soft Tones */
+  --ice-100: #F8FAFC;
+  --ice-200: #F1F5F9;
+  --ice-300: #E4ECFB;
+  --ice-400: #D0E0FB;
+  
+  /* Neutral Text */
+  --text-dark: #0F172A;
+  --text-body: #334155;
+  --text-muted: #64748B;
+  --text-light: #F8FAFC;
+  
+  /* Status Colors */
+  --success-green: #10B981;
+  --success-bg: #ECFDF5;
+  --border-light: #E2E8F0;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 10px 25px -5px rgba(4, 21, 39, 0.08);
+  --shadow-lg: 0 20px 35px -10px rgba(4, 21, 39, 0.12);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-primary);
+  background-color: #F4F7FB;
+  color: var(--text-dark);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font-family: var(--font-primary);
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+input, select, textarea {
+  font-family: var(--font-primary);
+  outline: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Typography Utilities */
+.heading-highlight {
+  color: var(--gold-600);
+}
+
+.text-gold {
+  color: var(--gold-500);
+}
+
+/* Base Container */
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Button Variants */
+.btn-primary {
+  background: var(--gold-gradient);
+  color: #0F172A;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 14px 28px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(245, 166, 35, 0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-primary:hover {
+  background: var(--gold-gradient-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(245, 166, 35, 0.45);
+}
+
+.btn-secondary {
+  background: #FFFFFF;
+  color: var(--navy-800);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 14px 28px;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-secondary:hover {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+}
+
+.btn-navy {
+  background: var(--navy-800);
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 14px 28px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-navy:hover {
+  background: var(--navy-700);
+}
+
+/* Pill / Badge Styles */
+.badge-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.badge-navy {
+  background: var(--navy-800);
+  color: #FFFFFF;
+}
+.badge-gold {
+  background: rgba(245, 166, 35, 0.15);
+  color: #D97706;
+}
+.badge-ice {
+  background: #E0EAFF;
+  color: #1E40AF;
+}
+
+/* Form Styles */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.form-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-body);
+}
+.form-input {
+  width: 100%;
+  padding: 14px 18px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: 1px solid #CBD5E1;
+  background-color: #FFFFFF;
+  color: var(--text-dark);
+  transition: all 0.2s;
+}
+.form-input:focus {
+  border-color: var(--gold-500);
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.2);
+}
+
+/* Level Pills Selector */
+.pill-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.pill-btn {
+  padding: 12px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  color: var(--text-body);
+  text-align: center;
+  transition: all 0.2s;
+}
+.pill-btn.active {
+  border-color: var(--gold-500);
+  background: #FFFBEB;
+  color: #B45309;
+  box-shadow: 0 0 0 2px rgba(245, 166, 35, 0.25);
+}
+
+/* Checkbox Card */
+.checkbox-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 20px;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+.checkbox-card.active {
+  border-color: var(--gold-500);
+  background: #FFFBEB;
+  color: #B45309;
+}
+
+/* Switcher Banner */
+.demo-switcher-bar {
+  background: #020E1C;
+  color: #FFFFFF;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.demo-switcher-title {
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.demo-switcher-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.switcher-tab-btn {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #94A3B8;
+  border: none;
+}
+.switcher-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+}
+.switcher-tab-btn.active {
+  background: var(--gold-gradient);
+  color: #0F172A;
+  font-weight: 700;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(4, 21, 39, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 20px;
+}
+.modal-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 540px;
+  width: 100%;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: popIn 0.25s ease-out;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .pill-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .demo-switcher-bar {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}

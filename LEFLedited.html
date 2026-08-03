@@ -1,0 +1,1306 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KTalk Academy | Judy's English Method for Brazilian Professionals</title>
+  <meta name="description" content="Designed specifically for high-achieving Brazilians, our premium immersion program bridges the gap between learning and living the language." />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="public/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="public/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="public/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="public/favicon-192x192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="public/apple-touch-icon.png">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  
+  <!-- React & Babel CDNs -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    :root {
+      --font-primary: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
+      --navy-900: #020E1C;
+      --navy-800: #041527;
+      --navy-700: #0A213D;
+      --gold-500: #F5A623;
+      --gold-gradient: linear-gradient(135deg, #F7B500 0%, #E59800 100%);
+      --gold-gradient-hover: linear-gradient(135deg, #FFC21A 0%, #F5A623 100%);
+      --ice-100: #F8FAFC;
+      --ice-300: #E4ECFB;
+      --text-dark: #0F172A;
+      --text-body: #334155;
+      --text-muted: #64748B;
+      --border-light: #E2E8F0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { overflow-x: hidden; width: 100%; }
+    body { font-family: var(--font-primary); background-color: #F4F7FB; color: var(--text-dark); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+    button { font-family: var(--font-primary); cursor: pointer; border: none; outline: none; transition: all 0.2s ease-in-out; }
+    input, select, textarea { font-family: var(--font-primary); outline: none; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; }
+
+    @media (max-width: 768px) {
+      .admin-shell { flex-direction: column !important; }
+      .admin-sidebar { width: 100% !important; }
+    }
+
+    .container { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+    .heading-highlight { color: #D97706; }
+
+    /* Button Variants */
+    .btn-primary {
+      background: var(--gold-gradient); color: #0F172A; font-weight: 700; font-size: 15px;
+      padding: 14px 28px; border-radius: 12px; box-shadow: 0 4px 12px rgba(245, 166, 35, 0.35);
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-primary:hover { background: var(--gold-gradient-hover); transform: translateY(-1px); }
+    .btn-secondary {
+      background: #FFFFFF; color: var(--navy-800); font-weight: 600; font-size: 15px;
+      padding: 14px 28px; border-radius: 12px; border: 1px solid var(--border-light);
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-navy {
+      background: var(--navy-800); color: #FFFFFF; font-weight: 600; font-size: 15px;
+      padding: 14px 28px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+
+    .badge-tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+    .badge-navy { background: var(--navy-800); color: #FFFFFF; }
+    .badge-gold { background: rgba(245, 166, 35, 0.15); color: #D97706; }
+    .badge-ice { background: #E0EAFF; color: #1E40AF; }
+
+    .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+    .form-label { font-size: 13px; font-weight: 700; color: var(--text-body); }
+    .form-input { width: 100%; padding: 14px 18px; font-size: 15px; border-radius: 10px; border: 1px solid #CBD5E1; background: #FFFFFF; color: var(--text-dark); }
+    .form-input:focus { border-color: var(--gold-500); box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.2); }
+
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(4, 21, 39, 0.6);
+      backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1200; padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Backend API base URL.
+    // Local dev (server running via `npm run dev` in /server): https://ktalk-academy-api.onrender.com/api
+    // ================================================================
+    // >>> DEPLOY STEP: after your Render backend is live, replace the
+    //     URL below with it, e.g. 'https://ktalk-academy-api.onrender.com/api'
+    // ================================================================
+    const API_BASE_URL = 'https://ktalk-academy-api.onrender.com/api';
+
+    const companyInfo = {
+      name: "KTalk Academy",
+      founder: "Judy N.",
+      headquarters: "Camobi, Santa Maria, RS, Brazil",
+      email: "leflbyjudy@gmail.com",
+      phone: "+55 55 92001-9028",
+      copyrightYear: 2026
+    };
+
+    // --- Payment Info ---
+    const pixKey = "favy20@gmail.com";
+    const MINIMUM_PRICE = 25;
+
+    // --- Payment / Contact Modal ---
+    // Two paths, matching how Judy actually wants to run this - no payment
+    // gateway, just a direct line to her: chat on WhatsApp, or pay via PIX
+    // (which creates the student's account so she can see it on her dashboard).
+    function PaymentModal({ isOpen, onClose, plan, onPaymentSuccess }) {
+      const suggestedPrice = plan?.price || '120';
+      const [mode, setMode] = useState(null); // null | 'whatsapp' | 'pix'
+      const [fullName, setFullName] = useState('');
+      const [email, setEmail] = useState('');
+      const [password, setPassword] = useState('');
+      const [amount, setAmount] = useState(String(suggestedPrice));
+      const [confirmed, setConfirmed] = useState(false);
+      const [isSubmitting, setIsSubmitting] = useState(false);
+      const [submitError, setSubmitError] = useState('');
+
+      useEffect(() => {
+        setAmount(String(plan?.price || '120'));
+        setMode(null);
+        setConfirmed(false);
+        setSubmitError('');
+      }, [plan, isOpen]);
+
+      if (!isOpen) return null;
+
+      const planName = plan?.name || 'Diagnostic Call & Membership';
+      const numericAmount = parseFloat(amount);
+      const isAmountValid = !Number.isNaN(numericAmount) && numericAmount >= MINIMUM_PRICE;
+
+      const openWhatsApp = (message) => {
+        const phoneDigits = companyInfo.phone.replace(/[^0-9]/g, '');
+        window.open(`https://wa.me/${phoneDigits}?text=${encodeURIComponent(message)}`, '_blank');
+      };
+
+      const handleWhatsAppClick = () => {
+        openWhatsApp(`Hi Judy! I'd like to talk about "${planName}" before deciding how to proceed.`);
+        onClose();
+      };
+
+      const handlePixConfirm = async (e) => {
+        e.preventDefault();
+        if (!isAmountValid) {
+          setSubmitError(`Please enter an amount of at least R$ ${MINIMUM_PRICE}.`);
+          return;
+        }
+        setSubmitError('');
+        setIsSubmitting(true);
+
+        let res;
+        try {
+          res = await fetch(`${API_BASE_URL}/payments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fullName, email, password, planName, amount: numericAmount })
+          });
+        } catch (networkErr) {
+          setSubmitError('Could not reach the server. Make sure the backend is running, then try again.');
+          setIsSubmitting(false);
+          return;
+        }
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          setSubmitError(data.error || 'Something went wrong. Please try again.');
+          setIsSubmitting(false);
+          return;
+        }
+        setIsSubmitting(false);
+
+        openWhatsApp(`Hi Judy! I just paid R$ ${numericAmount} via PIX for "${planName}". My name is ${fullName}. Please confirm receipt and activate my access.`);
+        setConfirmed(true);
+      };
+
+      return (
+        <div className="modal-overlay" onClick={onClose}>
+          <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '32px', maxWidth: '480px', width: '100%', boxShadow: '0 25px 50px rgba(0,0,0,0.3)' }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid #E2E8F0', paddingBottom: '16px' }}>
+              <div>
+                <span style={{ fontSize: '16px', fontWeight: '800', color: '#041527' }}>{planName}</span>
+                <div style={{ fontSize: '11px', color: '#94A3B8' }}>Suggested price: R$ {suggestedPrice}</div>
+              </div>
+              <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '18px', color: '#64748B' }}>✕</button>
+            </div>
+
+            {confirmed ? (
+              <div style={{ textAlign: 'center', padding: '10px 0 20px 0' }}>
+                <div style={{ fontSize: '48px' }}>✅</div>
+                <h3 style={{ fontSize: '20px', fontWeight: '800', margin: '12px 0 6px 0' }}>Thanks, {fullName || 'there'}!</h3>
+                <p style={{ fontSize: '14px', color: '#64748B', marginBottom: '20px' }}>We opened WhatsApp with your details — send the message and Judy will confirm your payment and activate your access. You can log in with the password you just created once she does.</p>
+                <button className="btn-primary" style={{ width: '100%' }} onClick={onPaymentSuccess}>Continue →</button>
+              </div>
+            ) : mode === null ? (
+              <div>
+                <p style={{ fontSize: '14px', color: '#475569', marginBottom: '20px' }}>How would you like to proceed?</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <button className="btn-secondary" style={{ width: '100%', textAlign: 'left', padding: '18px' }} onClick={handleWhatsAppClick}>
+                    💬 Chat with Judy on WhatsApp
+                    <div style={{ fontSize: '12px', fontWeight: '400', color: '#64748B', marginTop: '4px' }}>Ask questions or arrange payment directly with her.</div>
+                  </button>
+                  <button className="btn-primary" style={{ width: '100%', textAlign: 'left', padding: '18px' }} onClick={() => setMode('pix')}>
+                    ⚡ Pay via PIX
+                    <div style={{ fontSize: '12px', fontWeight: '400', color: 'rgba(255,255,255,0.8)', marginTop: '4px' }}>Pay now and create your student account.</div>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <button onClick={() => setMode(null)} style={{ background: 'none', border: 'none', color: '#64748B', fontSize: '13px', fontWeight: '600', marginBottom: '16px' }}>← Back</button>
+
+                <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '14px', padding: '16px', marginBottom: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '10px' }}>
+                    <span style={{ color: '#64748B', fontWeight: '600' }}>PIX Key</span>
+                    <span style={{ fontWeight: '700', color: '#041527' }}>{pixKey}</span>
+                  </div>
+                  <label className="form-label" style={{ fontSize: '12px' }}>Your Amount (minimum R$ {MINIMUM_PRICE})</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '20px', fontWeight: '800', color: '#041527' }}>R$</span>
+                    <input
+                      type="number"
+                      min={MINIMUM_PRICE}
+                      step="1"
+                      className="form-input"
+                      style={{ fontSize: '20px', fontWeight: '800' }}
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                    />
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '6px' }}>Feel free to propose a price that works for you — R$ {MINIMUM_PRICE} minimum.</div>
+                </div>
+
+                <p style={{ fontSize: '13px', color: '#475569', marginBottom: '16px' }}>
+                  Pay <strong>R$ {isAmountValid ? numericAmount : amount}</strong> to the PIX key above, then create your account below so we can confirm your payment and set you up.
+                </p>
+                <form onSubmit={handlePixConfirm}>
+                  <div className="form-group">
+                    <label className="form-label">Full Name</label>
+                    <input className="form-input" placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Email</label>
+                    <input type="email" className="form-input" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Create a Password</label>
+                    <input type="password" className="form-input" placeholder="At least 6 characters" minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} required />
+                  </div>
+                  {submitError && <div style={{ color: '#DC2626', fontSize: '12px', marginBottom: '12px', fontWeight: '600' }}>{submitError}</div>}
+                  <button type="submit" disabled={isSubmitting} className="btn-primary" style={{ width: '100%', padding: '16px', marginTop: '4px' }}>
+                    {isSubmitting ? 'Saving...' : "I've Paid via PIX"}
+                  </button>
+                  <div style={{ textAlign: 'center', fontSize: '11px', color: '#64748B', marginTop: '14px' }}>
+                    Questions? Email {companyInfo.email} • Tel {companyInfo.phone}
+                  </div>
+                </form>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // --- Shared Site Header ---
+    function Header({ setCurrentPage }) {
+      return (
+        <header style={{ background: '#FFFFFF', borderBottom: '1px solid #E2E8F0', padding: '16px 24px' }}>
+          <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ fontSize: '20px', fontWeight: '800', color: '#041527', cursor: 'pointer' }} onClick={() => setCurrentPage('landing')}>
+              KTalk Academy
+            </div>
+            <div style={{ display: 'flex', gap: '20px', alignItems: 'center', fontWeight: '600', fontSize: '14px', color: '#475569', flexWrap: 'wrap', justifyContent: 'flex-end', rowGap: '10px' }}>
+              <span style={{ cursor: 'pointer' }} onClick={() => setCurrentPage('courses')}>Courses</span>
+              <span style={{ cursor: 'pointer' }} onClick={() => setCurrentPage('methodology')}>Methodology</span>
+              <span style={{ cursor: 'pointer' }} onClick={() => setCurrentPage('pricing')}>Pricing</span>
+              <span style={{ cursor: 'pointer' }} onClick={() => setCurrentPage('landing')}>About</span>
+              <span style={{ cursor: 'pointer' }} onClick={() => setCurrentPage('login')}>Login</span>
+              <button className="btn-primary" style={{ padding: '10px 20px', fontSize: '14px' }} onClick={() => setCurrentPage('consultant-form')}>
+                Book a Consultant
+              </button>
+            </div>
+          </div>
+        </header>
+      );
+    }
+
+    // --- Shared Site Footer ---
+    function Footer({ setCurrentPage }) {
+      return (
+        <footer style={{ background: '#DCE8FA', padding: '48px 0 24px 0', borderTop: '1px solid #CBD5E1', color: '#041527' }}>
+          <div className="container">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '32px', marginBottom: '36px' }}>
+              <div>
+                <div style={{ fontSize: '20px', fontWeight: '800', marginBottom: '12px' }}>■ KTalk Academy</div>
+                <p style={{ fontSize: '14px', color: '#475569', maxWidth: '280px' }}>Empowering global communication for the next generation of Brazilian leaders.</p>
+              </div>
+              <div>
+                <h4 style={{ fontSize: '12px', fontWeight: '800', textTransform: 'uppercase', marginBottom: '14px' }}>Methodology</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px', color: '#475569' }}>
+                  <span style={{ cursor: 'pointer' }} onClick={() => setCurrentPage('methodology')}>Judy's Method</span>
+                  <span style={{ cursor: 'pointer' }} onClick={() => setCurrentPage('success-stories')}>Success Stories</span>
+                </div>
+              </div>
+              <div>
+                <h4 style={{ fontSize: '12px', fontWeight: '800', textTransform: 'uppercase', marginBottom: '14px' }}>Support</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px', color: '#475569' }}>
+                  <span style={{ cursor: 'pointer' }} onClick={() => setCurrentPage('consultant-form')}>Contact Support</span>
+                  <span style={{ cursor: 'pointer' }} onClick={() => setCurrentPage('privacy')}>Privacy Policy</span>
+                </div>
+              </div>
+              <div>
+                <h4 style={{ fontSize: '12px', fontWeight: '800', textTransform: 'uppercase', marginBottom: '14px' }}>Connect</h4>
+                <div style={{ fontSize: '13px', color: '#475569', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <div>📧 {companyInfo.email}</div>
+                  <div>📞 {companyInfo.phone}</div>
+                  <div>📍 {companyInfo.headquarters}</div>
+                </div>
+              </div>
+            </div>
+            <div style={{ borderTop: '1px solid rgba(4,21,39,0.1)', paddingTop: '20px', textAlign: 'center', fontSize: '13px', color: '#64748B' }}>
+              © {companyInfo.copyrightYear} KTalk Academy. Empowering global communication.
+            </div>
+          </div>
+        </footer>
+      );
+    }
+
+    // --- Landing Page ---
+    // Fallback shown if the backend can't be reached, so the site never looks broken.
+    const DEFAULT_COURSES = [
+      { id: 'f1', title: 'Business English', description: 'Negotiation, presentations, and professional writing for the global workplace.', icon: '💼' },
+      { id: 'f2', title: 'IELTS & TOEFL Prep', description: 'Structured, exam-focused coaching to hit your target band score.', icon: '📝' },
+      { id: 'f3', title: 'Conversational Fluency', description: 'Real-world speaking practice to think and respond naturally in English.', icon: '💬' },
+      { id: 'f4', title: 'Kids & Teens English', description: 'Engaging, age-appropriate lessons that build confidence early.', icon: '🎈' },
+      { id: 'f5', title: 'Travel English', description: 'Order food, ask directions, and connect with locals confidently on any trip.', icon: '✈️' }
+    ];
+
+    const METHODOLOGY_PILLARS = [
+      { icon: '🗣️', title: 'Live 1:1 Immersion', description: "You're speaking from lesson one — no silent grammar drills, just real conversation with real feedback." },
+      { icon: '🎯', title: 'Built Around You', description: 'Every plan adapts to your goals, whether that\'s a job interview, an exam, or your next trip abroad.' },
+      { icon: '🔁', title: 'Practice That Sticks', description: 'Spaced review and real-world scenarios so what you learn actually stays with you.' }
+    ];
+
+    const SUCCESS_STORIES = [
+      { name: 'Alessandro Moretti', location: 'Milan, Italy', quote: "Judy's method of teaching complex grammar through real business scenarios is unparalleled. Truly empowering.", rating: 5 },
+      { name: 'Yuki Lin', location: 'Tokyo, Japan', quote: 'The materials are excellent and the pacing fits my schedule perfectly. A genuinely fantastic experience.', rating: 5 },
+      { name: 'Sarah Jenkins', location: 'London, UK', quote: 'I finally feel confident on international client calls. This changed my career trajectory.', rating: 5 },
+      { name: 'Lucas Ferreira', location: 'São Paulo, Brazil', quote: 'Six months in and I can finally think in English instead of translating in my head first.', rating: 5 },
+      { name: 'Beatriz Santos', location: 'Rio de Janeiro, Brazil', quote: 'Judy noticed exactly where I was stuck and fixed it. My IELTS score jumped a full band.', rating: 4 }
+    ];
+
+    function LandingPage({ setCurrentPage }) {
+      const [courses, setCourses] = useState(DEFAULT_COURSES);
+
+      useEffect(() => {
+        fetch(`${API_BASE_URL}/courses`)
+          .then(res => res.ok ? res.json() : Promise.reject())
+          .then(data => { if (data && data.length) setCourses(data); })
+          .catch(() => {}); // keep the defaults if the backend isn't reachable
+      }, []);
+
+      return (
+        <div>
+          <Header setCurrentPage={setCurrentPage} />
+          <section style={{ padding: '60px 0 80px 0', background: 'linear-gradient(180deg, #F4F7FB 0%, #E8F0FE 100%)' }}>
+            <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '48px', alignItems: 'center' }}>
+              <div>
+                <div className="badge-tag badge-navy">🌐 Especialmente para Brasileiros</div>
+                <h1 style={{ fontSize: '50px', fontWeight: '800', color: '#041527', margin: '20px 0', lineHeight: 1.15 }}>
+                  Master English with <br /><span className="heading-highlight">Judy's Method</span>
+                </h1>
+                <p style={{ fontSize: '17px', color: '#475569', lineHeight: 1.6, marginBottom: '32px' }}>
+                  Designed specifically for high-achieving Brazilians, our premium immersion program bridges the gap between learning and living the language.
+                </p>
+                <div style={{ display: 'flex', gap: '16px', marginBottom: '32px' }}>
+                  <button className="btn-primary" onClick={() => setCurrentPage('consultant-form')}>Book Your Consultation →</button>
+                  <button className="btn-secondary" onClick={() => setCurrentPage('pricing')}>Explore Programs</button>
+                </div>
+                <div style={{ fontSize: '13px', fontWeight: '600', color: '#475569' }}>Joined by 500+ professionals across Brazil</div>
+              </div>
+              <div style={{ borderRadius: '24px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(4,21,39,0.12)', position: 'relative' }}>
+                <img src="public/images/judy.jpg" style={{ width: '100%', height: '480px', objectFit: 'cover', objectPosition: 'center 20%' }} alt="Judy" />
+                <div style={{ position: 'absolute', bottom: '24px', left: '24px', background: '#FFFFFF', padding: '14px 20px', borderRadius: '14px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+                  <span style={{ fontSize: '20px' }}>✓</span>
+                  <div>
+                    <div style={{ fontWeight: '700', fontSize: '14px' }}>Certified Method</div>
+                    <div style={{ fontSize: '12px', color: '#64748B' }}>Oxford-based Curriculum</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section style={{ padding: '70px 0' }}>
+            <div className="container">
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
+                <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '18px', padding: '32px', cursor: 'pointer' }} onClick={() => setCurrentPage('courses')}>
+                  <div style={{ fontSize: '32px', marginBottom: '12px' }}>📘</div>
+                  <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#041527', marginBottom: '8px' }}>Courses</h3>
+                  <p style={{ fontSize: '14px', color: '#64748B', lineHeight: 1.5, marginBottom: '16px' }}>Pick the path that fits where you are right now.</p>
+                  <span style={{ fontSize: '14px', fontWeight: '700', color: '#D97706' }}>View Courses →</span>
+                </div>
+                <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '18px', padding: '32px', cursor: 'pointer' }} onClick={() => setCurrentPage('methodology')}>
+                  <div style={{ fontSize: '32px', marginBottom: '12px' }}>🎯</div>
+                  <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#041527', marginBottom: '8px' }}>Our Methodology</h3>
+                  <p style={{ fontSize: '14px', color: '#64748B', lineHeight: 1.5, marginBottom: '16px' }}>Three principles behind every lesson Judy teaches.</p>
+                  <span style={{ fontSize: '14px', fontWeight: '700', color: '#D97706' }}>See the Methodology →</span>
+                </div>
+                <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '18px', padding: '32px', cursor: 'pointer' }} onClick={() => setCurrentPage('success-stories')}>
+                  <div style={{ fontSize: '32px', marginBottom: '12px' }}>⭐</div>
+                  <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#041527', marginBottom: '8px' }}>Success Stories</h3>
+                  <p style={{ fontSize: '14px', color: '#64748B', lineHeight: 1.5, marginBottom: '16px' }}>What students are saying after studying with Judy.</p>
+                  <span style={{ fontSize: '14px', fontWeight: '700', color: '#D97706' }}>Read Success Stories →</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <Footer setCurrentPage={setCurrentPage} />
+        </div>
+      );
+    }
+
+    // --- Courses Page (standalone) ---
+    function CoursesPage({ setCurrentPage }) {
+      const [courses, setCourses] = useState(DEFAULT_COURSES);
+
+      useEffect(() => {
+        fetch(`${API_BASE_URL}/courses`)
+          .then(res => res.ok ? res.json() : Promise.reject())
+          .then(data => { if (data && data.length) setCourses(data); })
+          .catch(() => {}); // keep the defaults if the backend isn't reachable
+      }, []);
+
+      return (
+        <div>
+          <Header setCurrentPage={setCurrentPage} />
+          <section style={{ padding: '70px 0' }}>
+            <div className="container">
+              <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+                <h2 style={{ fontSize: '32px', fontWeight: '800', color: '#041527' }}>Courses</h2>
+                <p style={{ fontSize: '15px', color: '#64748B' }}>Pick the path that fits where you are right now.</p>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px', marginBottom: '36px' }}>
+                {courses.map(c => (
+                  <div key={c.id} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '18px', padding: '28px' }}>
+                    <div style={{ fontSize: '32px', marginBottom: '12px' }}>{c.icon}</div>
+                    <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#041527', marginBottom: '8px' }}>{c.title}</h3>
+                    <p style={{ fontSize: '14px', color: '#64748B', lineHeight: 1.5 }}>{c.description}</p>
+                  </div>
+                ))}
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <button className="btn-primary" onClick={() => setCurrentPage('pricing')}>Explore More →</button>
+              </div>
+            </div>
+          </section>
+          <Footer setCurrentPage={setCurrentPage} />
+        </div>
+      );
+    }
+
+    // --- Methodology Page (standalone) ---
+    function MethodologyPage({ setCurrentPage }) {
+      return (
+        <div>
+          <Header setCurrentPage={setCurrentPage} />
+          <section style={{ padding: '70px 0', background: '#F8FAFC' }}>
+            <div className="container">
+              <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+                <h2 style={{ fontSize: '32px', fontWeight: '800', color: '#041527' }}>Our Methodology</h2>
+                <p style={{ fontSize: '15px', color: '#64748B' }}>Three principles behind every lesson Judy teaches.</p>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
+                {METHODOLOGY_PILLARS.map((m, i) => (
+                  <div key={i} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '18px', padding: '28px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '32px', marginBottom: '12px' }}>{m.icon}</div>
+                    <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#041527', marginBottom: '8px' }}>{m.title}</h3>
+                    <p style={{ fontSize: '14px', color: '#64748B', lineHeight: 1.5 }}>{m.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+          <Footer setCurrentPage={setCurrentPage} />
+        </div>
+      );
+    }
+
+    // --- Success Stories Page (standalone) ---
+    function SuccessStoriesPage({ setCurrentPage }) {
+      return (
+        <div>
+          <Header setCurrentPage={setCurrentPage} />
+          <section style={{ padding: '70px 0' }}>
+            <div className="container">
+              <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+                <h2 style={{ fontSize: '32px', fontWeight: '800', color: '#041527' }}>Success Stories</h2>
+                <p style={{ fontSize: '15px', color: '#64748B' }}>What students are saying after studying with Judy.</p>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '24px' }}>
+                {SUCCESS_STORIES.map((s, i) => (
+                  <div key={i} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '18px', padding: '28px' }}>
+                    <div style={{ color: '#F5A623', fontSize: '14px', marginBottom: '10px' }}>{'★'.repeat(s.rating)}{'☆'.repeat(5 - s.rating)}</div>
+                    <p style={{ fontSize: '14px', color: '#475569', lineHeight: 1.6, marginBottom: '16px', fontStyle: 'italic' }}>"{s.quote}"</p>
+                    <div style={{ fontWeight: '700', fontSize: '14px', color: '#041527' }}>{s.name}</div>
+                    <div style={{ fontSize: '12px', color: '#94A3B8' }}>{s.location}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+          <Footer setCurrentPage={setCurrentPage} />
+        </div>
+      );
+    }
+
+    // --- Pricing Page ---
+    function PricingPage({ setCurrentPage, setIsPaid }) {
+      const [selectedPlan, setSelectedPlan] = useState(null);
+
+      const triggerPayment = (p) => {
+        setSelectedPlan(p);
+      };
+
+      return (
+        <div>
+          <Header setCurrentPage={setCurrentPage} />
+          <PaymentModal
+            isOpen={!!selectedPlan}
+            onClose={() => setSelectedPlan(null)}
+            plan={selectedPlan}
+            onPaymentSuccess={() => {
+              setIsPaid(true);
+              setSelectedPlan(null);
+              setCurrentPage('payment-success');
+            }}
+          />
+          <section style={{ padding: '60px 0 80px 0' }}>
+            <div className="container text-center" style={{ textAlign: 'center', marginBottom: '48px' }}>
+              <h1 style={{ fontSize: '44px', fontWeight: '800', color: '#041527' }}>
+                Flexible Learning, <span className="heading-highlight">Tailored Pricing</span>
+              </h1>
+              <p style={{ fontSize: '16px', color: '#475569', maxWidth: '600px', margin: '12px auto 0 auto' }}>
+                Prices below are starting points — feel free to propose an amount that works for you (R$ 25 minimum) when you check out.
+              </p>
+            </div>
+
+            <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '28px' }}>
+              <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '36px', border: '1px solid #E2E8F0' }}>
+                <h3 style={{ fontSize: '24px', fontWeight: '800', color: '#041527' }}>Basic</h3>
+                <div style={{ fontSize: '42px', fontWeight: '800', color: '#041527', margin: '16px 0 24px 0' }}>R$ 100<span style={{ fontSize: '14px', color: '#64748B' }}>/month</span></div>
+                <button className="btn-secondary" style={{ width: '100%' }} onClick={() => triggerPayment({ name: 'Basic Plan', price: '100' })}>Get Started →</button>
+              </div>
+
+              <div style={{ background: '#041527', color: '#FFFFFF', borderRadius: '20px', padding: '36px', position: 'relative', transform: 'translateY(-8px)' }}>
+                <div style={{ position: 'absolute', top: 0, right: 0, background: '#F5A623', color: '#0F172A', fontSize: '11px', fontWeight: '800', padding: '6px 14px', borderRadius: '0 20px 0 12px' }}>POPULAR</div>
+                <h3 style={{ fontSize: '24px', fontWeight: '800' }}>Premium</h3>
+                <div style={{ fontSize: '42px', fontWeight: '800', margin: '16px 0 24px 0' }}>R$ 200<span style={{ fontSize: '14px', color: '#94A3B8' }}>/month</span></div>
+                <button className="btn-primary" style={{ width: '100%' }} onClick={() => triggerPayment({ name: 'Premium Plan', price: '200' })}>Get Started →</button>
+              </div>
+
+              <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '36px', border: '1px solid #E2E8F0' }}>
+                <h3 style={{ fontSize: '24px', fontWeight: '800', color: '#041527' }}>VIP Support</h3>
+                <div style={{ fontSize: '42px', fontWeight: '800', color: '#041527', margin: '16px 0 24px 0' }}>R$ 500<span style={{ fontSize: '14px', color: '#64748B' }}>/month</span></div>
+                <button className="btn-secondary" style={{ width: '100%' }} onClick={() => triggerPayment({ name: 'VIP Support Plan', price: '500' })}>Get Started →</button>
+              </div>
+            </div>
+          </section>
+          <Footer setCurrentPage={setCurrentPage} />
+        </div>
+      );
+    }
+
+    // --- Consultant Form Page ---
+    function ConsultantFormPage({ setCurrentPage, setIsPaid }) {
+      const [englishLevel, setEnglishLevel] = useState('Intermediate');
+      const [selectedPlan, setSelectedPlan] = useState(null);
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        setSelectedPlan({ name: 'Diagnostic Consultation', price: '120' });
+      };
+
+      return (
+        <div>
+          <Header setCurrentPage={setCurrentPage} />
+          <PaymentModal
+            isOpen={!!selectedPlan}
+            onClose={() => setSelectedPlan(null)}
+            plan={selectedPlan}
+            onPaymentSuccess={() => {
+              setIsPaid(true);
+              setSelectedPlan(null);
+              setCurrentPage('payment-success');
+            }}
+          />
+          <section style={{ padding: '60px 0 80px 0' }}>
+            <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '48px' }}>
+              <div>
+                <div className="badge-tag badge-ice">🌐 Especialmente para Brasileiros</div>
+                <h1 style={{ fontSize: '40px', fontWeight: '800', color: '#041527', margin: '16px 0', lineHeight: 1.2 }}>
+                  Your English journey starts with a <span className="heading-highlight">personalized roadmap</span>.
+                </h1>
+                <p style={{ fontSize: '16px', color: '#475569', lineHeight: 1.6, marginBottom: '24px' }}>
+                  Book a 15-minute diagnostic call with Judy to evaluate your current level.
+                </p>
+                <div style={{ background: '#FFFFFF', padding: '16px', borderRadius: '12px', border: '1px solid #E2E8F0', display: 'flex', gap: '12px', alignItems: 'center' }}>
+                  <img src="public/images/judy.jpg" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }} alt="Judy" />
+                  <div>
+                    <div style={{ fontWeight: '700', fontSize: '14px' }}>Judy N.</div>
+                    <div style={{ fontSize: '13px', fontStyle: 'italic', color: '#475569' }}>"I'll help you find your voice in English."</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ background: '#FFFFFF', borderRadius: '20px', padding: '40px', boxShadow: '0 20px 40px rgba(4,21,39,0.08)' }}>
+                <form onSubmit={handleSubmit}>
+                  <div className="form-group">
+                    <label className="form-label">Full Name / Nome Completo</label>
+                    <input className="form-input" placeholder="John Doe" required />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">WhatsApp Number</label>
+                    <input className="form-input" placeholder="+55 (XX) XXXXX-XXXX" required />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">English Level</label>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))', gap: '8px' }}>
+                      {['Beginner', 'Intermediate', 'Advanced', 'Fluent/Pro'].map(lvl => (
+                        <button
+                          key={lvl}
+                          type="button"
+                          onClick={() => setEnglishLevel(lvl)}
+                          style={{
+                            padding: '10px 4px', fontSize: '12px', fontWeight: '700', borderRadius: '8px',
+                            background: englishLevel === lvl ? '#FFFBEB' : '#FFFFFF',
+                            border: englishLevel === lvl ? '2px solid #F5A623' : '1px solid #E2E8F0'
+                          }}
+                        >
+                          {lvl}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <button type="submit" className="btn-primary" style={{ width: '100%', padding: '16px', marginTop: '12px' }}>
+                    Continue →
+                  </button>
+                </form>
+              </div>
+            </div>
+          </section>
+          <Footer setCurrentPage={setCurrentPage} />
+        </div>
+      );
+    }
+
+    // --- Privacy Policy View ---
+    function PrivacyPolicyPage({ setCurrentPage }) {
+      return (
+        <div>
+          <Header setCurrentPage={setCurrentPage} />
+          <section style={{ padding: '60px 0' }}>
+            <div className="container">
+              <div style={{ background: '#FFFFFF', borderRadius: '24px', padding: '48px', border: '1px solid #E2E8F0' }}>
+                <h1 style={{ fontSize: '32px', fontWeight: '800', color: '#041527', marginBottom: '8px' }}>Privacy Policy</h1>
+                <p style={{ fontSize: '13px', color: '#64748B', marginBottom: '32px' }}>Effective Date: January 1, {companyInfo.copyrightYear}</p>
+
+                <div style={{ color: '#334155', lineHeight: 1.7, display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                  <h3>1. LGPD Compliance & Data Collection</h3>
+                  <p>KTalk Academy collects diagnostic call details, proficiency levels, and payment confirmation details for PIX transfers.</p>
+
+                  <h3>2. Controller Contact Information</h3>
+                  <div style={{ background: '#F8FAFC', padding: '20px', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                    <div><strong>Headquarters:</strong> {companyInfo.headquarters}</div>
+                    <div><strong>Email:</strong> {companyInfo.email}</div>
+                    <div><strong>Telephone / WhatsApp:</strong> {companyInfo.phone}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <Footer setCurrentPage={setCurrentPage} />
+        </div>
+      );
+    }
+
+    // --- Payment Success ---
+    function PaymentSuccessPage({ setCurrentPage }) {
+      return (
+        <div>
+          <Header setCurrentPage={setCurrentPage} />
+          <section style={{ padding: '80px 0', textAlign: 'center' }}>
+            <div className="container">
+              <div style={{ background: '#FFFFFF', borderRadius: '24px', padding: '56px 40px', maxWidth: '560px', margin: '0 auto', boxShadow: '0 20px 40px rgba(4,21,39,0.08)' }}>
+                <div style={{ fontSize: '48px', marginBottom: '16px' }}>✅</div>
+                <div className="badge-tag badge-gold" style={{ marginBottom: '12px' }}>PIX SUBMITTED</div>
+                <h1 style={{ fontSize: '32px', fontWeight: '800', color: '#041527', marginBottom: '12px' }}>Almost there!</h1>
+                <p style={{ fontSize: '15px', color: '#475569', marginBottom: '28px' }}>
+                  Your account has been created and your PIX payment is on its way to Judy for confirmation. You can log in now — your dashboard will show your membership as pending until she confirms your payment.
+                </p>
+                <button className="btn-primary" style={{ width: '100%', padding: '16px' }} onClick={() => setCurrentPage('student-dashboard')}>
+                  Go to Student Portal →
+                </button>
+              </div>
+            </div>
+          </section>
+          <Footer setCurrentPage={setCurrentPage} />
+        </div>
+      );
+    }
+
+    // --- Student Login ---
+    function StudentLoginPage({ setCurrentPage, setIsPaid, setIsAdmin }) {
+      const [mode, setMode] = useState('student');
+      const [email, setEmail] = useState('');
+      const [password, setPassword] = useState('');
+      const [error, setError] = useState('');
+      const [isSubmitting, setIsSubmitting] = useState(false);
+
+      const handleLogin = async (e) => {
+        e.preventDefault();
+        setError('');
+        setIsSubmitting(true);
+        try {
+          const body = mode === 'student' ? { role: mode, email, password } : { role: mode, password };
+          const res = await fetch(`${API_BASE_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            setError(data.error || 'Login failed.');
+            return;
+          }
+          if (mode === 'student') {
+            localStorage.setItem('ktalk_student_token', data.token);
+            setIsPaid(true);
+            setCurrentPage('student-dashboard');
+          } else {
+            localStorage.setItem('ktalk_admin_token', data.token);
+            setIsAdmin(true);
+            setCurrentPage('admin-dashboard');
+          }
+        } catch (err) {
+          setError('Could not reach the server. Is the backend running?');
+        } finally {
+          setIsSubmitting(false);
+        }
+      };
+
+      return (
+        <div>
+          <Header setCurrentPage={setCurrentPage} />
+          <section style={{ padding: '80px 0' }}>
+            <div className="container">
+              <div style={{ background: '#FFFFFF', borderRadius: '24px', padding: '48px', maxWidth: '440px', margin: '0 auto', boxShadow: '0 20px 40px rgba(4,21,39,0.08)' }}>
+                <h2 style={{ fontSize: '26px', fontWeight: '800', color: '#041527', marginBottom: '8px' }}>Sign in to KTalk</h2>
+                <p style={{ fontSize: '14px', color: '#64748B', marginBottom: '20px' }}>Access your learning roadmap & feedback.</p>
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+                  <button
+                    type="button"
+                    onClick={() => { setMode('student'); setError(''); }}
+                    style={{
+                      flex: 1, padding: '10px', fontSize: '13px', fontWeight: '700', borderRadius: '10px',
+                      background: mode === 'student' ? '#FFFBEB' : '#FFFFFF',
+                      border: mode === 'student' ? '2px solid #F5A623' : '1px solid #E2E8F0', color: '#041527'
+                    }}
+                  >
+                    🎓 Student
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setMode('admin'); setError(''); }}
+                    style={{
+                      flex: 1, padding: '10px', fontSize: '13px', fontWeight: '700', borderRadius: '10px',
+                      background: mode === 'admin' ? '#FFFBEB' : '#FFFFFF',
+                      border: mode === 'admin' ? '2px solid #F5A623' : '1px solid #E2E8F0', color: '#041527'
+                    }}
+                  >
+                    👑 Admin
+                  </button>
+                </div>
+                <form onSubmit={handleLogin}>
+                  {mode === 'student' && (
+                    <div className="form-group">
+                      <label className="form-label">Email</label>
+                      <input
+                        type="email"
+                        className="form-input"
+                        placeholder="you@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                    </div>
+                  )}
+                  <div className="form-group">
+                    <label className="form-label">Password</label>
+                    <input
+                      type="password"
+                      className="form-input"
+                      placeholder="Enter password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  {error && <div style={{ color: '#DC2626', fontSize: '13px', marginBottom: '12px', fontWeight: '600' }}>{error}</div>}
+                  <button type="submit" disabled={isSubmitting} className={mode === 'admin' ? 'btn-navy' : 'btn-secondary'} style={{ width: '100%' }}>
+                    {isSubmitting ? 'Signing in...' : (mode === 'admin' ? '👑 Login as Admin' : '🔓 Login as Student')}
+                  </button>
+                  {mode === 'student' && (
+                    <p style={{ fontSize: '12px', color: '#94A3B8', textAlign: 'center', marginTop: '14px' }}>
+                      Don't have an account yet? Your account is created automatically the first time you pay via PIX.
+                    </p>
+                  )}
+                </form>
+              </div>
+            </div>
+          </section>
+          <Footer setCurrentPage={setCurrentPage} />
+        </div>
+      );
+    }
+
+    // --- Student Dashboard ---
+    function StudentDashboardPage({ setCurrentPage, isPaid, setIsPaid }) {
+      const [profile, setProfile] = useState(null);
+      const [loading, setLoading] = useState(true);
+      const [loadError, setLoadError] = useState('');
+
+      useEffect(() => {
+        if (!isPaid) return;
+        setLoading(true);
+        setLoadError('');
+        fetch(`${API_BASE_URL}/students/me`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('ktalk_student_token') || ''}` }
+        })
+          .then(res => {
+            if (res.status === 401) {
+              localStorage.removeItem('ktalk_student_token');
+              setIsPaid(false);
+              return null;
+            }
+            return res.ok ? res.json() : Promise.reject();
+          })
+          .then(data => { if (data) setProfile(data); })
+          .catch(() => setLoadError('Could not reach the server. Is the backend running?'))
+          .finally(() => setLoading(false));
+      }, [isPaid]);
+
+      if (!isPaid) {
+        return (
+          <div>
+            <Header setCurrentPage={setCurrentPage} />
+            <section style={{ padding: '100px 0', textAlign: 'center' }}>
+              <div className="container">
+                <div style={{ background: '#FFFFFF', borderRadius: '24px', padding: '48px', maxWidth: '520px', margin: '0 auto', boxShadow: '0 20px 40px rgba(4,21,39,0.08)' }}>
+                  <div style={{ fontSize: '40px', marginBottom: '16px' }}>🔒</div>
+                  <h2 style={{ fontSize: '28px', fontWeight: '800', color: '#041527', marginBottom: '12px' }}>Student Portal Locked</h2>
+                  <p style={{ fontSize: '14px', color: '#64748B', marginBottom: '24px' }}>Access requires an active paid membership.</p>
+                  <button className="btn-primary" onClick={() => setCurrentPage('login')}>Log In →</button>
+                </div>
+              </div>
+            </section>
+            <Footer setCurrentPage={setCurrentPage} />
+          </div>
+        );
+      }
+
+      const status = profile?.latestPayment?.status;
+
+      return (
+        <div>
+          <Header setCurrentPage={setCurrentPage} />
+          <main style={{ padding: '40px 0 80px 0' }}>
+            <div className="container">
+              <div style={{ background: '#041527', color: '#FFFFFF', borderRadius: '20px', padding: '36px', marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <span className="badge-tag badge-gold">MEMBER PORTAL</span>
+                  <h1 style={{ fontSize: '32px', fontWeight: '800', marginTop: '8px' }}>Welcome back{profile ? `, ${profile.full_name}` : ''}!</h1>
+                  <p style={{ color: '#94A3B8' }}>Track your level, join live drills, and review notes from Judy.</p>
+                </div>
+                <button
+                  className="btn-secondary"
+                  onClick={() => {
+                    localStorage.removeItem('ktalk_student_token');
+                    setIsPaid(false);
+                    setCurrentPage('landing');
+                  }}
+                >
+                  Log Out
+                </button>
+              </div>
+
+              {loading ? (
+                <div style={{ fontSize: '14px', color: '#64748B' }}>Loading your account...</div>
+              ) : loadError ? (
+                <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#B91C1C', borderRadius: '12px', padding: '14px 18px', fontSize: '13px', fontWeight: '600' }}>{loadError}</div>
+              ) : status === 'confirmed' ? (
+                <div style={{ background: '#DCFCE7', border: '1px solid #86EFAC', borderRadius: '14px', padding: '20px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+                  <span style={{ fontSize: '22px' }}>✓</span>
+                  <div>
+                    <div style={{ fontWeight: '700', color: '#166534' }}>Membership Active</div>
+                    <div style={{ fontSize: '13px', color: '#166534' }}>Your {profile.latestPayment.plan_name} payment has been confirmed by Judy.</div>
+                  </div>
+                </div>
+              ) : status === 'rejected' ? (
+                <div style={{ background: '#FEE2E2', border: '1px solid #FECACA', borderRadius: '14px', padding: '20px' }}>
+                  <div style={{ fontWeight: '700', color: '#991B1B', marginBottom: '4px' }}>Payment Not Confirmed</div>
+                  <div style={{ fontSize: '13px', color: '#991B1B' }}>Judy wasn't able to confirm this payment. Please reach out on WhatsApp ({companyInfo.phone}) so you can sort it out together.</div>
+                </div>
+              ) : (
+                <div style={{ background: '#FEF3C7', border: '1px solid #FDE68A', borderRadius: '14px', padding: '20px' }}>
+                  <div style={{ fontWeight: '700', color: '#92400E', marginBottom: '4px' }}>Pending Confirmation</div>
+                  <div style={{ fontSize: '13px', color: '#92400E' }}>Judy hasn't confirmed your PIX payment yet. This usually only takes a little while — check back soon, or reach out on WhatsApp if it's been a few days.</div>
+                </div>
+              )}
+            </div>
+          </main>
+          <Footer setCurrentPage={setCurrentPage} />
+        </div>
+      );
+    }
+
+    // --- Admin Dashboard ---
+    function AdminDashboardPage({ setCurrentPage, isAdmin }) {
+      const [tab, setTab] = useState('payments'); // 'payments' | 'students' | 'courses'
+      const [payments, setPayments] = useState([]);
+      const [students, setStudents] = useState([]);
+      const [courses, setCourses] = useState([]);
+      const [stats, setStats] = useState({ confirmedStudents: 0, pendingPayments: 0, confirmedRevenue: 0, totalStudents: 0 });
+      const [loading, setLoading] = useState(true);
+      const [loadError, setLoadError] = useState('');
+      const [actionError, setActionError] = useState('');
+
+      // Course edit/add form state
+      const [editingCourseId, setEditingCourseId] = useState(null);
+      const [courseForm, setCourseForm] = useState({ title: '', description: '', icon: '📘' });
+
+      const authHeaders = () => ({
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('ktalk_admin_token') || ''}`
+      });
+
+      const loadData = async () => {
+        setLoading(true);
+        setLoadError('');
+        try {
+          const [paymentsRes, statsRes, studentsRes, coursesRes] = await Promise.all([
+            fetch(`${API_BASE_URL}/payments`, { headers: authHeaders() }),
+            fetch(`${API_BASE_URL}/dashboard/stats`, { headers: authHeaders() }),
+            fetch(`${API_BASE_URL}/students`, { headers: authHeaders() }),
+            fetch(`${API_BASE_URL}/courses`)
+          ]);
+          if ([paymentsRes.status, statsRes.status, studentsRes.status].includes(401)) {
+            localStorage.removeItem('ktalk_admin_token');
+            setCurrentPage('login');
+            return;
+          }
+          setPayments(await paymentsRes.json());
+          setStats(await statsRes.json());
+          setStudents(await studentsRes.json());
+          setCourses(await coursesRes.json());
+        } catch (err) {
+          setLoadError('Could not reach the server. Is the backend running?');
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      useEffect(() => {
+        if (isAdmin) loadData();
+      }, [isAdmin]);
+
+      const updateStatus = async (id, status) => {
+        setActionError('');
+        try {
+          const res = await fetch(`${API_BASE_URL}/payments/${id}/status`, {
+            method: 'PATCH',
+            headers: authHeaders(),
+            body: JSON.stringify({ status })
+          });
+          if (!res.ok) throw new Error();
+          loadData();
+        } catch (err) {
+          setActionError('Could not update that payment. Try again.');
+        }
+      };
+
+      const startEditCourse = (course) => {
+        setEditingCourseId(course.id);
+        setCourseForm({ title: course.title, description: course.description, icon: course.icon });
+      };
+
+      const startNewCourse = () => {
+        setEditingCourseId('new');
+        setCourseForm({ title: '', description: '', icon: '📘' });
+      };
+
+      const saveCourse = async (e) => {
+        e.preventDefault();
+        setActionError('');
+        try {
+          const isNew = editingCourseId === 'new';
+          const res = await fetch(
+            isNew ? `${API_BASE_URL}/courses` : `${API_BASE_URL}/courses/${editingCourseId}`,
+            {
+              method: isNew ? 'POST' : 'PUT',
+              headers: authHeaders(),
+              body: JSON.stringify(courseForm)
+            }
+          );
+          if (!res.ok) throw new Error();
+          setEditingCourseId(null);
+          loadData();
+        } catch (err) {
+          setActionError('Could not save that course. Try again.');
+        }
+      };
+
+      const deleteCourse = async (id) => {
+        setActionError('');
+        try {
+          const res = await fetch(`${API_BASE_URL}/courses/${id}`, { method: 'DELETE', headers: authHeaders() });
+          if (!res.ok) throw new Error();
+          loadData();
+        } catch (err) {
+          setActionError('Could not delete that course. Try again.');
+        }
+      };
+
+      if (!isAdmin) {
+        return (
+          <div>
+            <Header setCurrentPage={setCurrentPage} />
+            <section style={{ padding: '100px 0', textAlign: 'center' }}>
+              <div className="container">
+                <div style={{ background: '#FFFFFF', borderRadius: '24px', padding: '48px', maxWidth: '520px', margin: '0 auto', boxShadow: '0 20px 40px rgba(4,21,39,0.08)' }}>
+                  <div style={{ fontSize: '40px', marginBottom: '16px' }}>🔒</div>
+                  <h2 style={{ fontSize: '28px', fontWeight: '800', color: '#041527', marginBottom: '12px' }}>Admin Access Required</h2>
+                  <p style={{ fontSize: '14px', color: '#64748B', marginBottom: '24px' }}>Please log in as Judy to view this dashboard.</p>
+                  <button className="btn-primary" onClick={() => setCurrentPage('login')}>Log In →</button>
+                </div>
+              </div>
+            </section>
+            <Footer setCurrentPage={setCurrentPage} />
+          </div>
+        );
+      }
+
+      const tabs = [
+        { id: 'payments', label: '💳 Payments' },
+        { id: 'students', label: '🎓 Students' },
+        { id: 'courses', label: '📘 Courses' }
+      ];
+
+      return (
+        <div className="admin-shell" style={{ display: 'flex', minHeight: '100vh' }}>
+          <aside className="admin-sidebar" style={{ width: '260px', background: '#020E1C', color: '#FFFFFF', padding: '24px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ fontSize: '20px', fontWeight: '800', marginBottom: '24px', cursor: 'pointer' }} onClick={() => setCurrentPage('landing')}>KTalk Academy</div>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center', background: 'rgba(255,255,255,0.06)', padding: '12px', borderRadius: '12px', marginBottom: '24px' }}>
+                <img src="public/images/judy.jpg" style={{ width: '38px', height: '38px', borderRadius: '50%' }} alt="Judy" />
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: '700' }}>Judy's Dashboard</div>
+                  <div style={{ fontSize: '10px', color: '#94A3B8' }}>KTALK ADMINISTRATOR</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {tabs.map(t => (
+                  <button
+                    key={t.id}
+                    onClick={() => setTab(t.id)}
+                    style={{
+                      textAlign: 'left', padding: '12px 14px', borderRadius: '10px', fontSize: '14px', fontWeight: '700',
+                      background: tab === t.id ? 'rgba(245,166,35,0.15)' : 'transparent',
+                      color: tab === t.id ? '#F5A623' : '#CBD5E1', border: 'none'
+                    }}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <button
+              className="btn-secondary"
+              style={{ width: '100%' }}
+              onClick={() => {
+                localStorage.removeItem('ktalk_admin_token');
+                setCurrentPage('landing');
+              }}
+            >
+              Log Out
+            </button>
+          </aside>
+
+          <main style={{ flexGrow: 1, padding: '32px 20px', minWidth: 0 }}>
+            <div style={{ marginBottom: '28px' }}>
+              <h1 style={{ fontSize: '32px', fontWeight: '800', color: '#041527' }}>Academic Oversight</h1>
+              <p style={{ fontSize: '14px', color: '#64748B' }}>Welcome back, Judy. Here's what's happening today.</p>
+            </div>
+
+            {loadError && (
+              <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#B91C1C', borderRadius: '12px', padding: '14px 18px', marginBottom: '20px', fontSize: '13px', fontWeight: '600' }}>
+                {loadError}
+              </div>
+            )}
+            {actionError && (
+              <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#B91C1C', borderRadius: '12px', padding: '14px 18px', marginBottom: '20px', fontSize: '13px', fontWeight: '600' }}>
+                {actionError}
+              </div>
+            )}
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '20px', marginBottom: '24px' }}>
+              <div style={{ background: '#FFFFFF', borderRadius: '16px', padding: '24px', border: '1px solid #E2E8F0' }}>
+                <div style={{ fontSize: '11px', fontWeight: '700', color: '#64748B' }}>TOTAL STUDENTS</div>
+                <div style={{ fontSize: '36px', fontWeight: '800', color: '#041527' }}>{loading ? '…' : stats.totalStudents}</div>
+              </div>
+              <div style={{ background: '#FFFFFF', borderRadius: '16px', padding: '24px', border: '1px solid #E2E8F0' }}>
+                <div style={{ fontSize: '11px', fontWeight: '700', color: '#64748B' }}>CONFIRMED PAYMENTS</div>
+                <div style={{ fontSize: '36px', fontWeight: '800', color: '#041527' }}>{loading ? '…' : stats.confirmedStudents}</div>
+              </div>
+              <div style={{ background: '#FFFFFF', borderRadius: '16px', padding: '24px', border: '1px solid #E2E8F0' }}>
+                <div style={{ fontSize: '11px', fontWeight: '700', color: '#64748B' }}>PENDING PIX</div>
+                <div style={{ fontSize: '36px', fontWeight: '800', color: '#041527' }}>{loading ? '…' : stats.pendingPayments}</div>
+              </div>
+              <div style={{ background: '#FFFFFF', borderRadius: '16px', padding: '24px', border: '1px solid #E2E8F0' }}>
+                <div style={{ fontSize: '11px', fontWeight: '700', color: '#64748B' }}>CONFIRMED REVENUE</div>
+                <div style={{ fontSize: '36px', fontWeight: '800', color: '#041527' }}>{loading ? '…' : `R$ ${stats.confirmedRevenue}`}</div>
+              </div>
+            </div>
+
+            {tab === 'payments' && (
+              <div style={{ background: '#FFFFFF', borderRadius: '16px', padding: '28px', border: '1px solid #E2E8F0' }}>
+                <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '4px' }}>PIX Payments</h3>
+                <p style={{ fontSize: '13px', color: '#64748B', marginBottom: '16px' }}>Confirm a payment once you see it land in your account.</p>
+                {loading ? (
+                  <div style={{ fontSize: '14px', color: '#64748B' }}>Loading...</div>
+                ) : payments.length === 0 ? (
+                  <div style={{ fontSize: '14px', color: '#64748B' }}>No payment submissions yet.</div>
+                ) : (
+                  payments.map(p => (
+                    <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderBottom: '1px solid #F1F5F9' }}>
+                      <div>
+                        <div style={{ fontWeight: '700', fontSize: '15px', color: '#041527' }}>{p.full_name} — {p.plan_name}</div>
+                        <div style={{ fontSize: '13px', color: '#64748B' }}>{p.student_email} • R$ {p.amount} • Submitted {new Date(p.created_at).toLocaleString()}</div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        {p.status === 'pending' ? (
+                          <React.Fragment>
+                            <button onClick={() => updateStatus(p.id, 'confirmed')} style={{ background: '#DCFCE7', color: '#166534', padding: '8px 14px', borderRadius: '8px', fontWeight: '700', fontSize: '13px' }}>Confirm</button>
+                            <button onClick={() => updateStatus(p.id, 'rejected')} style={{ background: '#FEE2E2', color: '#991B1B', padding: '8px 14px', borderRadius: '8px', fontWeight: '700', fontSize: '13px' }}>Reject</button>
+                          </React.Fragment>
+                        ) : (
+                          <span style={{ fontSize: '12px', fontWeight: '700', padding: '6px 12px', borderRadius: '20px', background: p.status === 'confirmed' ? '#DCFCE7' : '#FEE2E2', color: p.status === 'confirmed' ? '#166534' : '#991B1B' }}>
+                            {p.status === 'confirmed' ? '✓ Confirmed' : '✕ Rejected'}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            {tab === 'students' && (
+              <div style={{ background: '#FFFFFF', borderRadius: '16px', padding: '28px', border: '1px solid #E2E8F0' }}>
+                <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '4px' }}>Students</h3>
+                <p style={{ fontSize: '13px', color: '#64748B', marginBottom: '16px' }}>Everyone who has created an account by paying via PIX.</p>
+                {loading ? (
+                  <div style={{ fontSize: '14px', color: '#64748B' }}>Loading...</div>
+                ) : students.length === 0 ? (
+                  <div style={{ fontSize: '14px', color: '#64748B' }}>No students yet.</div>
+                ) : (
+                  students.map(s => (
+                    <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderBottom: '1px solid #F1F5F9' }}>
+                      <div>
+                        <div style={{ fontWeight: '700', fontSize: '15px', color: '#041527' }}>{s.full_name}</div>
+                        <div style={{ fontSize: '13px', color: '#64748B' }}>{s.email} • Joined {new Date(s.created_at).toLocaleDateString()}</div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: '13px', fontWeight: '700', color: '#041527' }}>{s.latest_plan || '—'}</div>
+                        {s.latest_payment_status && (
+                          <span style={{ fontSize: '11px', fontWeight: '700', padding: '4px 10px', borderRadius: '20px', background: s.latest_payment_status === 'confirmed' ? '#DCFCE7' : s.latest_payment_status === 'rejected' ? '#FEE2E2' : '#FEF3C7', color: s.latest_payment_status === 'confirmed' ? '#166534' : s.latest_payment_status === 'rejected' ? '#991B1B' : '#92400E' }}>
+                            {s.latest_payment_status}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            {tab === 'courses' && (
+              <div style={{ background: '#FFFFFF', borderRadius: '16px', padding: '28px', border: '1px solid #E2E8F0' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <div>
+                    <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '4px' }}>Courses</h3>
+                    <p style={{ fontSize: '13px', color: '#64748B' }}>This is what visitors see on your site. Edit freely.</p>
+                  </div>
+                  <button className="btn-primary" onClick={startNewCourse}>+ Add Course</button>
+                </div>
+
+                {editingCourseId && (
+                  <form onSubmit={saveCourse} style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '14px', padding: '18px', marginBottom: '20px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '60px 1fr', gap: '12px', marginBottom: '12px' }}>
+                      <div className="form-group" style={{ marginBottom: 0 }}>
+                        <label className="form-label">Icon</label>
+                        <input className="form-input" value={courseForm.icon} onChange={(e) => setCourseForm({ ...courseForm, icon: e.target.value })} />
+                      </div>
+                      <div className="form-group" style={{ marginBottom: 0 }}>
+                        <label className="form-label">Title</label>
+                        <input className="form-input" value={courseForm.title} onChange={(e) => setCourseForm({ ...courseForm, title: e.target.value })} required />
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Description</label>
+                      <input className="form-input" value={courseForm.description} onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })} required />
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      <button type="submit" className="btn-primary">Save</button>
+                      <button type="button" className="btn-secondary" onClick={() => setEditingCourseId(null)}>Cancel</button>
+                    </div>
+                  </form>
+                )}
+
+                {loading ? (
+                  <div style={{ fontSize: '14px', color: '#64748B' }}>Loading...</div>
+                ) : (
+                  courses.map(c => (
+                    <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderBottom: '1px solid #F1F5F9' }}>
+                      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        <span style={{ fontSize: '24px' }}>{c.icon}</span>
+                        <div>
+                          <div style={{ fontWeight: '700', fontSize: '15px', color: '#041527' }}>{c.title}</div>
+                          <div style={{ fontSize: '13px', color: '#64748B' }}>{c.description}</div>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button onClick={() => startEditCourse(c)} style={{ background: '#E8F0FE', color: '#1E40AF', padding: '8px 14px', borderRadius: '8px', fontWeight: '700', fontSize: '13px' }}>Edit</button>
+                        <button onClick={() => deleteCourse(c.id)} style={{ background: '#FEE2E2', color: '#991B1B', padding: '8px 14px', borderRadius: '8px', fontWeight: '700', fontSize: '13px' }}>Delete</button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </main>
+        </div>
+      );
+    }
+
+    // --- Main App Root ---
+    function App() {
+      const [currentPage, setCurrentPage] = useState('landing');
+      const [isPaid, setIsPaid] = useState(false);
+      const [isAdmin, setIsAdmin] = useState(false);
+
+      // Restore session on page load/refresh if a token is already stored.
+      // (Tokens expire after 12h server-side, so a stale one just fails on the next API call.)
+      useEffect(() => {
+        if (localStorage.getItem('ktalk_student_token')) setIsPaid(true);
+        if (localStorage.getItem('ktalk_admin_token')) setIsAdmin(true);
+      }, []);
+
+      return (
+        <div>
+          {currentPage === 'landing' && <LandingPage setCurrentPage={setCurrentPage} />}
+          {currentPage === 'courses' && <CoursesPage setCurrentPage={setCurrentPage} />}
+          {currentPage === 'methodology' && <MethodologyPage setCurrentPage={setCurrentPage} />}
+          {currentPage === 'success-stories' && <SuccessStoriesPage setCurrentPage={setCurrentPage} />}
+          {currentPage === 'pricing' && <PricingPage setCurrentPage={setCurrentPage} setIsPaid={setIsPaid} />}
+          {currentPage === 'consultant-form' && <ConsultantFormPage setCurrentPage={setCurrentPage} setIsPaid={setIsPaid} />}
+          {currentPage === 'payment-success' && <PaymentSuccessPage setCurrentPage={setCurrentPage} />}
+          {currentPage === 'privacy' && <PrivacyPolicyPage setCurrentPage={setCurrentPage} />}
+          {currentPage === 'login' && <StudentLoginPage setCurrentPage={setCurrentPage} setIsPaid={setIsPaid} setIsAdmin={setIsAdmin} />}
+          {currentPage === 'student-dashboard' && <StudentDashboardPage setCurrentPage={setCurrentPage} isPaid={isPaid} setIsPaid={setIsPaid} />}
+          {currentPage === 'admin-dashboard' && <AdminDashboardPage setCurrentPage={setCurrentPage} isAdmin={isAdmin} />}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

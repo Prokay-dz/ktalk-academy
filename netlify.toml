@@ -1,0 +1,8 @@
+[build]
+  command = "true"
+  publish = "."
+
+[[redirects]]
+  from = "/"
+  to = "/LEFLedited.html"
+  status = 200
